@@ -1,0 +1,50 @@
+
+
+
+body {
+    margin: 0;
+    padding: 0;
+}
+
+
+.workbench {
+
+
+    .workbench-title{
+        font-size: 20px;
+        font-weight: 600;
+        padding: 10px;
+        text-align: center;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    }
+
+    .workbench-components-panel{
+        .components{
+            border: solid 1px rgba(0, 0, 0, 0.1);
+            padding: 10px;
+        }
+    }
+    
+    .workbench-workspace{
+        width: 100%;
+        height: 100vh;
+        display: flex;
+    
+        .workbench-main{
+            border: solid 1px rgba(0, 0, 0, 0.1);
+            width: 40%;  
+        }
+    
+        .workbench-side{
+            border: solid 1px rgba(0, 0, 0, 0.1);
+            width: 20%;
+        }
+    }
+
+
+}
+
+
+
+
+

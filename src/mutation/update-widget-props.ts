@@ -1,0 +1,20 @@
+import { ComponentConfig, PageEditorProps } from '@/interface';
+import { objects } from 'util-kit';
+import { ComponentType } from '@/constants';
+
+const { deepClone } = objects;
+
+// collection customization specific logic
+// page -> row -> widgets
+export const updateWidgetPropsHanlder = ({ pageConfig, updatePageConfig, registry }: PageEditorProps) => (depthMark: string, props: any) => {
+    const nextConfig = deepClone(pageConfig);
+    // find the target widget in the component tree
+    // first path is the root
+    console.log('meng depthMark', depthMark);
+    const paths = depthMark.split('-').slice(1).map(Number);   
+    const target = paths.reduce((acc: any, current) => acc.children[current], nextConfig);
+    target.props = { ...target.props, ...props };
+    updatePageConfig(nextConfig);    
+    
+    
+};

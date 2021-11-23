@@ -1,0 +1,21 @@
+
+
+.add-bar{
+    position: relative;
+    height: 10px;
+    width: 100%;
+    background-color:darkolivegreen;
+    opacity: 0.1;
+    margin: 10px 0;
+    text-align: center;
+
+    &:hover{
+        opacity: 1;
+    }
+
+    .add-btn{
+        position: relative;
+        top: -3px;
+        z-index: 2;
+    }
+}
