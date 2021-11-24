@@ -9,6 +9,9 @@ import registry from './component-registry';
 import { ComponentType } from '@/constants';
 import TestWidget from './components/test-widget';
 import TestWidgetSetting from './components/test-widget-setting';
+import TestWidget2 from './components/test-widget-2';
+import TestWidgetSetting2 from './components/test-widget-2-setting';
+
 
 
 
@@ -18,7 +21,15 @@ registry.register({
     Component: TestWidget,
     Setting: TestWidgetSetting,
     type: ComponentType.Widget,
-    name: 'collection.test-widget',
+    name: 'namespace.test-widget',
+    canAddFromToobar: true,
+    maxCount: 1000,
+});
+registry.register({
+    Component: TestWidget2,
+    Setting: TestWidgetSetting2,
+    type: ComponentType.Widget,
+    name: 'namespace.test-widget2',
     canAddFromToobar: true,
     maxCount: 1000,
 });

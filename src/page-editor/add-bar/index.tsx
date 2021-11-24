@@ -19,11 +19,11 @@ export default function AddBar({ addWidget, registry, pageConfig, depthMark }) {
 
         return (
             <DropdownItem key={def.name}>
-                <button 
+                <a 
                     onClick={() => addWidget(def.name, depthMark)}
                 >
                     {def.name}
-                </button>
+                </a>
             </DropdownItem>
         );
     })

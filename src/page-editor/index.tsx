@@ -1,13 +1,12 @@
-import React, { Fragment, useEffect } from 'react';
+import React, { Fragment } from 'react';
 import AddBar from './add-bar';
 import { 
     ComponentConfig, PageEditorProps
 } from '@/interface';
 import { ComponentType, BuiltInComponentNames } from '@/constants';
-import { addWidgetHandler, updateWidgetPropsHanlder, removeWidgetHandler,} from '@/mutation';
-import { objects } from 'util-kit';
+import { addWidgetHandler, updateWidgetPropsHanlder, removeWidgetHandler, reorderWidgetHanlder } from '@/mutation';
 import EditableWrapper from './editable-wrapper';
-import { DragDropContext } from 'react-beautiful-dnd';
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 
 
 
@@ -18,6 +17,7 @@ export default function PageEditor({ pageConfig, updatePageConfig, registry }: P
     const addWidget = addWidgetHandler({ pageConfig, updatePageConfig, registry });
     const updateWidgetProps = updateWidgetPropsHanlder({ pageConfig, updatePageConfig, registry });
     const removeWidget = removeWidgetHandler({ pageConfig, updatePageConfig, registry });
+    const reorderWidget = reorderWidgetHanlder({ pageConfig, updatePageConfig, registry });
 
     const onDragStart = (result: any) => {
         console.log(result);
@@ -28,12 +28,24 @@ export default function PageEditor({ pageConfig, updatePageConfig, registry }: P
     }
 
     const onDragEnd = (result: any) => {
+        const { destination, source, draggableId } = result;
+
+        if (!destination) {
+            return;
+        }
+
+        if (destination.droppableId === source.droppableId && destination.index === source.index) {
+            return;
+        }
+
+        reorderWidget(draggableId, destination, source);
+
         console.log(result);
     }
 
 
-    function renderComponent(pageConfig: ComponentConfig, depthMark: string = '0', parentProps = {}) {
-        const { name, type, children, props } = pageConfig;
+    function renderComponent(pageConfig: ComponentConfig, depthMark: string = '0', parentProps = {}, index: number = 0) {
+        const { name, type, children, props, id } = pageConfig;
         const { Component, Setting } = registry.getComponentDefByName(name);
         if (!Component) {
             console.error('unknown component', pageConfig);
@@ -42,21 +54,34 @@ export default function PageEditor({ pageConfig, updatePageConfig, registry }: P
         const currentProps = { ...parentProps, ...props };
 
         if (type === ComponentType.Container) {
-            const list = children.map((child, index: number) => {
-                return renderComponent(child, `${depthMark}-${index}`, currentProps);
+            const list = children.map((child, subIndex: number) => {
+                return renderComponent(child, `${depthMark}-${subIndex}`, currentProps, subIndex);
             })
             
-            const nodes = React.createElement(Component as any, {
-                ...currentProps,
-                key: depthMark,
-                children: list,
-            });
-
             // for every row component, insert the add-bar at the bottom
             if (name === BuiltInComponentNames.Row) {
                 return (
-                    <Fragment>
-                        { nodes }
+                    <Fragment key={id}>
+                        <Droppable 
+                            droppableId={id}
+                            direction="horizontal"
+                        >
+                            {(provided) => (
+                                <div
+                                    ref={provided.innerRef}
+                                    {...currentProps}
+                                    {...provided.droppableProps}
+                                >
+                                    <Component
+                                        {...currentProps}
+                                        {...provided.droppableProps}
+                                    >
+                                        { list }
+                                        { provided.placeholder }
+                                    </Component>
+                                </div>
+                            )}
+                        </Droppable>
                         <AddBar
                             depthMark={depthMark} 
                             addWidget={addWidget} 
@@ -66,13 +91,18 @@ export default function PageEditor({ pageConfig, updatePageConfig, registry }: P
                     </Fragment>
                 )
             }
-            return nodes;
+            return (
+                <Component {...currentProps} key={id}>
+                    { list }
+                </Component>
+            );
 
         } else if (type === ComponentType.Widget) {
-            // TODO: if Setting exist add an editable
-            // TODO: add an editable wrapper
             return (
-                <EditableWrapper 
+                <EditableWrapper
+                    key={id}
+                    id={id}
+                    index={index}
                     SettingComponent={Setting}
                     updateWidgetProps={updateWidgetProps}
                     removeWidget={removeWidget}

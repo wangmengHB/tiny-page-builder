@@ -1,10 +1,8 @@
-import { ComponentConfig, PageEditorProps } from '@/interface';
+import { PageEditorProps } from '@/interface';
 import { objects } from 'util-kit';
-import { ComponentType } from '@/constants';
 
 const { deepClone } = objects;
 
-// collection customization specific logic
 // page -> row -> widgets
 export const updateWidgetPropsHanlder = ({ pageConfig, updatePageConfig, registry }: PageEditorProps) => (depthMark: string, props: any) => {
     const nextConfig = deepClone(pageConfig);
@@ -15,6 +13,5 @@ export const updateWidgetPropsHanlder = ({ pageConfig, updatePageConfig, registr
     const target = paths.reduce((acc: any, current) => acc.children[current], nextConfig);
     target.props = { ...target.props, ...props };
     updatePageConfig(nextConfig);    
-    
-    
+      
 };

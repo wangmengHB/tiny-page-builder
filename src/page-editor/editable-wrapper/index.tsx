@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import './styles.scss';
 import classnames from 'classnames';
-import { DeleteOutlined, EditOutlined } from '@ant-design/icons'
+import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
+import { Draggable } from 'react-beautiful-dnd';
 
 
 
@@ -9,10 +10,14 @@ import { DeleteOutlined, EditOutlined } from '@ant-design/icons'
 
 
 export default function EditableWrapper(
-    { children, SettingComponent, updateWidgetProps, widgetProps, removeWidget, depthMark }
+    { 
+        children, SettingComponent, updateWidgetProps, widgetProps, removeWidget, depthMark, 
+        id, index,
+    }
 ) {
     const [visible, setVisible] = useState(false)
     const [toolbarVisible, setToolbarVisible] = useState(false);
+    const wrapperRef = useRef(null);
 
 
     const actionButtons = [
@@ -28,62 +33,73 @@ export default function EditableWrapper(
         },
     ]
 
-    const handleBlur = (event: any) => {
-        
-        if (!event.currentTarget.contains(event.relatedTarget)) {
-            setToolbarVisible(false);
-        } else {
-            // if event.relatedTarget is focused
-            // check if child node is focused
-            setTimeout(() => {
-                if (event.relatedTarget === document.activeElement) {
-                    setToolbarVisible(false);
-                }
-            })
-
-            
-
+    
+    useEffect(() => {
+        const node = wrapperRef.current;
+        const handleClick = (e: Event) => {
+            if (node.contains(e.target) || node === e.target ) {
+                setToolbarVisible(true);
+            } else {
+                setToolbarVisible(false);
+            }
+        };
+        document.addEventListener('click', handleClick);
+        return () => {
+            document.removeEventListener('click', handleClick);
         }
-        
-    }
+    }, [])
 
     
     return (
-        <div 
-            className={classnames({"editable-wrapper": true, "toolbar-show": toolbarVisible})}
-            onFocus={() => setToolbarVisible(true) }
-            onBlur={handleBlur}
-            draggable
-            tabIndex={0}
+        <Draggable 
+            draggableId={id} 
+            index={index}
+            disableInteractiveElementBlocking={false}
         >
-            <div className="event-prevent">
-                { children }
-            </div>
-            { toolbarVisible && (
-                <div className="widget-toolbar">
-                    <div className="action-panel">
-                        {
-                            actionButtons.map((item: any) => (
-                                <a className="btn" onClick={item.onClick}>
-                                    { item.icon }
-                                </a>
-                            ))
-                        }
+            {(provided) => (
+                <div
+                    {...provided.draggableProps}
+                    {...provided.dragHandleProps}
+                    ref={provided.innerRef}
+                    className="draggable-wrapper"
+                >
+                    <div
+                        ref={wrapperRef} 
+                        className={classnames({"editable-wrapper": true, "toolbar-show": toolbarVisible})}   
+                    >
+                        <div className="event-prevent">
+                            { children }
+                        </div>
+                        { toolbarVisible && (
+                            <div className="widget-toolbar">
+                                <div className="action-panel">
+                                    {
+                                        actionButtons.map((item: any) => (
+                                            <a className="btn" onClick={item.onClick}>
+                                                { item.icon }
+                                            </a>
+                                        ))
+                                    }
+                                </div>
+                        </div>
+                        )}
+                        { SettingComponent && (
+                            <SettingComponent 
+                                visible={visible} 
+                                onClose={() => { setVisible(false)}}
+                                updateWidgetProps={(nextProps) => {
+                                    const mergeResult = {...widgetProps, ...nextProps};
+                                    updateWidgetProps(depthMark, mergeResult);
+                                }}
+                                {...widgetProps}
+                            />
+                        )}
                     </div>
-              </div>
+
+                </div>
+
             )}
-            { SettingComponent && (
-                <SettingComponent 
-                    visible={visible} 
-                    onClose={() => { setVisible(false)}}
-                    updateWidgetProps={(nextProps) => {
-                        const mergeResult = {...widgetProps, ...nextProps};
-                        updateWidgetProps(depthMark, mergeResult);
-                    }}
-                    {...widgetProps}
-                />
-            )}
-        </div>
+        </Draggable>
     )
 }
 

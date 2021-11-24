@@ -1,6 +1,5 @@
-import { ComponentConfig, PageEditorProps } from '@/interface';
+import { PageEditorProps } from '@/interface';
 import { objects } from 'util-kit';
-import { ComponentType } from '@/constants';
 
 const { deepClone } = objects;
 
@@ -9,7 +8,6 @@ const { deepClone } = objects;
 // TODO: this handler should be optimized
 // FIXME later
 
-// collection customization specific logic
 // page -> row -> widgets
 export const removeWidgetHandler = ({ pageConfig, updatePageConfig, registry }: PageEditorProps) => (depthMark: string) => {
     const targetPage = deepClone(pageConfig);

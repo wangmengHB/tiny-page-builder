@@ -7,12 +7,9 @@ const { deepClone } = objects;
 const MAX_COLUMN = 5;
 
 
-// collection customization specific logic
 // page -> row -> widgets
 export const addWidgetHandler = ({ pageConfig, updatePageConfig, registry }: PageEditorProps) => (name: string, depthMark: string) => {
     const targetPage: ComponentConfig = deepClone(pageConfig);
-    console.log('meng', depthMark);
-
     const widgetConfig = registry.createComponentConfig(name);
 
     const paths = depthMark.split('-').slice(1).map(Number);   
@@ -38,16 +35,5 @@ export const addWidgetHandler = ({ pageConfig, updatePageConfig, registry }: Pag
         newRow.children.push(widgetConfig);
         targetPage.children.splice(paths[0] + 1, 0, newRow);
     }
-
     updatePageConfig(targetPage);
-
-}
-
-export const addWidgetInNewRow = (pageConfig, updatePageConfig, registry) => (name) => {
-    const { children } = pageConfig;
-    const newRow = registry.createRowConfig();
-    const newWidget = registry.createComponentConfig(name);
-    newRow.children.push(newWidget);
-    pageConfig.children = [...children, newRow];
-    updatePageConfig(pageConfig);
 }
