@@ -6,15 +6,15 @@ import './styles.scss';
 
 
 
-export default function TestWidgetSetting(
-    { visible, onClose, value, updateWidgetProps }
+export default function SettingDialog(
+    { visible, onClose, rating, updateWidgetProps }
 ) {
 
-    const [innerValue, setInnerValue] = useState(0);
+    const [innerRating, setInnerRating] = useState(0);
 
     useEffect(() => {
-        setInnerValue(value);
-    }, [value]);
+        setInnerRating(rating);
+    }, [rating]);
 
     if (!visible) {
         return null;
@@ -22,16 +22,16 @@ export default function TestWidgetSetting(
 
     return (
         <div className="widget-setting-modal">
-            <div className="title"> antd Slider Setting</div>
+            <div className="title"> Widget Setting</div>
             <div className="form-item">
                 <TextField 
                     id="outlined-basic" 
                     label="Rating" 
                     variant="outlined" 
-                    value={innerValue} 
+                    value={innerRating || 0} 
                     onChange={(e) => {
                         console.log('meng', e.target.value);
-                        setInnerValue(Number(e.target.value));
+                        setInnerRating(Number(e.target.value));
                     }}
                 />
             </div>
@@ -40,7 +40,7 @@ export default function TestWidgetSetting(
                 <Button
                     onClick={() => {
                         const result = {
-                            value: innerValue,
+                            rating: innerRating,
                         }
                         updateWidgetProps(result);
                         onClose();

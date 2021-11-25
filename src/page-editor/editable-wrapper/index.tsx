@@ -75,7 +75,7 @@ export default function EditableWrapper(
                                 <div className="action-panel">
                                     {
                                         actionButtons.map((item: any) => (
-                                            <a className="btn" onClick={item.onClick}>
+                                            <a key={item.label} className="btn" onClick={item.onClick}>
                                                 { item.icon }
                                             </a>
                                         ))

@@ -2,9 +2,6 @@ import React from 'react';
 import './styles.scss';
 
 
-
-
-
 export default function Row({ children }) {
     const itemCountInRow = React.Children.count(children);
     const childrenNodes = React.Children.map(children, (child: any) => {
@@ -24,5 +21,4 @@ export default function Row({ children }) {
         </div>
     )
 }
-
 

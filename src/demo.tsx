@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
 import './styles.scss';
-
 import PageEditor from './page-editor';
 import RenderEngine from './render-engine/desktop';
 import Monitor from './monitor';
 import registry from './component-registry';
 import { ComponentType } from '@/constants';
-import TestWidget from './components/test-widget';
-import TestWidgetSetting from './components/test-widget-setting';
-import TestWidget2 from './components/test-widget-2';
-import TestWidgetSetting2 from './components/test-widget-2-setting';
+import RatingWidget from '@/widgets/rating-widget-from-mui';
+import RatingWidgetSettingDialog from '@/widgets/rating-widget-from-mui/setting-dialog';
+import BadgeWidget from '@/widgets/badge-widget-from-mui';
+import BadgeWidgetSettingDialog from '@/widgets/badge-widget-from-mui/setting-dialog';
+
 
 
 
@@ -18,18 +18,18 @@ import TestWidgetSetting2 from './components/test-widget-2-setting';
 
 // register the definition of components
 registry.register({
-    Component: TestWidget,
-    Setting: TestWidgetSetting,
+    Component: RatingWidget,
+    Setting: RatingWidgetSettingDialog,
     type: ComponentType.Widget,
-    name: 'namespace.test-widget',
+    name: 'namespace.rating-widget-from-mui',
     canAddFromToobar: true,
     maxCount: 1000,
 });
 registry.register({
-    Component: TestWidget2,
-    Setting: TestWidgetSetting2,
+    Component: BadgeWidget,
+    Setting: BadgeWidgetSettingDialog,
     type: ComponentType.Widget,
-    name: 'namespace.test-widget2',
+    name: 'namespace.badge-widget-from-mui',
     canAddFromToobar: true,
     maxCount: 1000,
 });

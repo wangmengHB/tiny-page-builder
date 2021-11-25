@@ -10,3 +10,5 @@ export enum BuiltInComponentNames {
     Row = 'tiny-page-builder.row',
 }
 
+export const MAX_ROW_ITEM_COUNT = 5;
+

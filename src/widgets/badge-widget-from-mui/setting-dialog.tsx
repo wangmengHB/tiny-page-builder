@@ -6,15 +6,15 @@ import './styles.scss';
 
 
 
-export default function TestWidgetSetting(
-    { visible, onClose, rating, updateWidgetProps }
+export default function SettingDialog(
+    { visible, onClose, value, updateWidgetProps }
 ) {
 
-    const [innerRating, setInnerRating] = useState(0);
+    const [innerValue, setInnerValue] = useState(0);
 
     useEffect(() => {
-        setInnerRating(rating);
-    }, [rating]);
+        setInnerValue(value);
+    }, [value]);
 
     if (!visible) {
         return null;
@@ -26,12 +26,12 @@ export default function TestWidgetSetting(
             <div className="form-item">
                 <TextField 
                     id="outlined-basic" 
-                    label="Rating" 
+                    label="Value" 
                     variant="outlined" 
-                    value={innerRating} 
+                    value={innerValue || 0} 
                     onChange={(e) => {
                         console.log('meng', e.target.value);
-                        setInnerRating(Number(e.target.value));
+                        setInnerValue(Number(e.target.value));
                     }}
                 />
             </div>
@@ -40,7 +40,7 @@ export default function TestWidgetSetting(
                 <Button
                     onClick={() => {
                         const result = {
-                            rating: innerRating,
+                            value: innerValue,
                         }
                         updateWidgetProps(result);
                         onClose();

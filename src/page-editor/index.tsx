@@ -6,7 +6,8 @@ import {
 import { ComponentType, BuiltInComponentNames } from '@/constants';
 import { addWidgetHandler, updateWidgetPropsHanlder, removeWidgetHandler, reorderWidgetHanlder } from '@/mutation';
 import EditableWrapper from './editable-wrapper';
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import { DragDropContext, Droppable } from 'react-beautiful-dnd';
+import WidgetWrapper from '@/components/widget-wrapper';
 
 
 
@@ -39,8 +40,6 @@ export default function PageEditor({ pageConfig, updatePageConfig, registry }: P
         }
 
         reorderWidget(draggableId, destination, source);
-
-        console.log(result);
     }
 
 
@@ -99,22 +98,23 @@ export default function PageEditor({ pageConfig, updatePageConfig, registry }: P
 
         } else if (type === ComponentType.Widget) {
             return (
-                <EditableWrapper
-                    key={id}
-                    id={id}
-                    index={index}
-                    SettingComponent={Setting}
-                    updateWidgetProps={updateWidgetProps}
-                    removeWidget={removeWidget}
-                    // props inherited from parent should not be editable
-                    widgetProps={props}
-                    depthMark={depthMark}
-                >
-                    {React.createElement(Component as any, {
-                        ...currentProps,
-                        key: depthMark
-                    })}
-                </EditableWrapper>
+                <WidgetWrapper key={id}>
+                    <EditableWrapper
+                        id={id}
+                        index={index}
+                        SettingComponent={Setting}
+                        updateWidgetProps={updateWidgetProps}
+                        removeWidget={removeWidget}
+                        // props inherited from parent should not be editable
+                        widgetProps={props}
+                        depthMark={depthMark}
+                    >
+                        {React.createElement(Component as any, {
+                            ...currentProps,
+                            key: depthMark
+                        })}
+                    </EditableWrapper>
+                </WidgetWrapper>
             )     
         } else {
             console.error('unknown component type', pageConfig);

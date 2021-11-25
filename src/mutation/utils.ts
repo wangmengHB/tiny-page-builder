@@ -17,3 +17,22 @@ export function getWidgetById(id: string, pageConfig: ComponentConfig) {
     }
     return res;
 }
+
+export function getParentWidget(widgetConfig: ComponentConfig, pageConfig: ComponentConfig) {
+    if (pageConfig.id === widgetConfig.id) {
+        return null;
+    }
+    if (!Array.isArray(pageConfig.children)) {
+        return null
+    }
+    if (pageConfig.children.find((child: any) => child.id === widgetConfig.id)) {
+        return pageConfig;
+    }
+    for (let i = 0; i < pageConfig.children.length; i++) {
+        const res = getParentWidget(widgetConfig, pageConfig.children[i]);
+        if (res) {
+            return res;
+        }
+    }
+    return null;
+}

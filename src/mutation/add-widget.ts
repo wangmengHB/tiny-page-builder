@@ -1,10 +1,10 @@
 
 import { ComponentConfig, PageEditorProps } from '@/interface';
 import { objects } from 'util-kit';
+import { MAX_ROW_ITEM_COUNT } from '@/constants';
 
 const { deepClone } = objects;
 
-const MAX_COLUMN = 5;
 
 
 // page -> row -> widgets
@@ -21,12 +21,12 @@ export const addWidgetHandler = ({ pageConfig, updatePageConfig, registry }: Pag
     // 2. check if next row can hold, then insert into next row
     // 3. create a new row, and insert into the new row
     if (
-        targetRow.children.length < MAX_COLUMN
+        targetRow.children.length < MAX_ROW_ITEM_COUNT
     ) {
         targetRow.children.push(widgetConfig);
     } else if ( 
         nextRow && Array.isArray(nextRow.children) && 
-        nextRow.children.length < MAX_COLUMN 
+        nextRow.children.length < MAX_ROW_ITEM_COUNT 
     ) {
         nextRow.children.push(widgetConfig);
     } else {
